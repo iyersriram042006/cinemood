@@ -60,7 +60,7 @@ def list_friends(db: Session = Depends(get_db), user: User = Depends(get_current
     for f in friendships:
         other_id = f.addressee_id if f.requester_id == user.id else f.requester_id
         other = db.query(User).filter(User.id == other_id).first()
-        result.append({"id": str(f.id), "status": f.status, "other_user_name": other.name, "other_user_email": other.email})
+        result.append({"id": str(f.id), "status": f.status, "other_user_id": str(other.id), "other_user_name": other.name, "other_user_email": other.email})
     return result
 
 @router.get("/pending")
