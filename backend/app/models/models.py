@@ -1,6 +1,7 @@
 import uuid
 from sqlalchemy import Column, String, Boolean, Integer, Numeric, Date, Text, ForeignKey, TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID, JSONB
+from pgvector.sqlalchemy import Vector
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.core.database import Base
@@ -48,6 +49,7 @@ class JournalEntry(Base):
     is_rewatch = Column(Boolean, default=False)
     rewatch_count = Column(Integer, default=0)
     embedding_text = Column(Text)
+    embedding = Column(Vector(384))
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 

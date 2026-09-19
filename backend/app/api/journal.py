@@ -5,6 +5,7 @@ from app.core.deps import get_current_user
 from app.models.models import User, Movie, MoodTag, JournalEntry
 from app.schemas.journal import JournalEntryCreate, JournalEntryUpdate, JournalEntryOut
 from app.services import tmdb_service
+from app.services.embedding_service import generate_embedding, build_embedding_text
 
 router = APIRouter(prefix="/api/journal", tags=["journal"])
 
@@ -45,6 +46,11 @@ def create_entry(data: JournalEntryCreate, db: Session = Depends(get_db), user: 
 
     moods = _get_or_create_moods(db, data.moods)
 
+    embedding_text = build_embedding_text(
+        movie.title, movie.genres or [], [m.name for m in moods], data.review
+    )
+    embedding = generate_embedding(embedding_text)
+
     entry = JournalEntry(
         user_id=user.id,
         movie_id=movie.id,
@@ -53,6 +59,8 @@ def create_entry(data: JournalEntryCreate, db: Session = Depends(get_db), user: 
         watched_at=data.watched_at,
         is_rewatch=data.is_rewatch,
         moods=moods,
+        embedding_text=embedding_text,
+        embedding=embedding,
     )
     db.add(entry)
     db.commit()
@@ -109,6 +117,13 @@ def update_entry(entry_id: str, data: JournalEntryUpdate, db: Session = Depends(
         entry.is_rewatch = data.is_rewatch
     if data.moods is not None:
         entry.moods = _get_or_create_moods(db, data.moods)
+
+    if data.review is not None or data.moods is not None:
+        embedding_text = build_embedding_text(
+            entry.movie.title, entry.movie.genres or [], [m.name for m in entry.moods], entry.review
+        )
+        entry.embedding_text = embedding_text
+        entry.embedding = generate_embedding(embedding_text)
 
     db.commit()
     db.refresh(entry)
