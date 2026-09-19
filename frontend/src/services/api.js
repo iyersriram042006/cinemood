@@ -21,7 +21,7 @@ export const movieAPI = {
 
 export const journalAPI = {
   create: (data) => api.post("/api/journal", data),
-  list: () => api.get("/api/journal"),
+  list: (params) => api.get("/api/journal", { params }),
   update: (id, data) => api.put(`/api/journal/${id}`, data),
   delete: (id) => api.delete(`/api/journal/${id}`),
 };
@@ -56,6 +56,12 @@ export const socialAPI = {
 
 export const compareAPI = {
   compare: (otherUserId) => api.get(`/api/compare/${otherUserId}`),
+};
+
+export const watchlistAPI = {
+  add: (tmdb_id, notes) => api.post("/api/watchlist", { tmdb_id, notes }),
+  list: () => api.get("/api/watchlist"),
+  remove: (id) => api.delete(`/api/watchlist/${id}`),
 };
 
 export default api;

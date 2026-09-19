@@ -11,6 +11,7 @@ export default function Navbar() {
       <Link to="/dashboard">Dashboard</Link>
       <Link to="/recommendations">Recommendations</Link>
       <Link to="/friends">Friends</Link>
+      <Link to="/watchlist">Watchlist</Link>
       <button onClick={logout} style={{ marginLeft: "auto" }}>Logout</button>
     </nav>
   );

@@ -8,6 +8,7 @@ import Recommendations from "./pages/Recommendations";
 import Friends from "./pages/Friends";
 import FriendProfile from "./pages/FriendProfile";
 import Compare from "./pages/Compare";
+import Watchlist from "./pages/Watchlist";
 
 function PrivateRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -26,6 +27,7 @@ function AppRoutes() {
         <Route path="/friends" element={<PrivateRoute><Friends /></PrivateRoute>} />
         <Route path="/profile/:userId" element={<PrivateRoute><FriendProfile /></PrivateRoute>} />
         <Route path="/compare/:userId" element={<PrivateRoute><Compare /></PrivateRoute>} />
+        <Route path="/watchlist" element={<PrivateRoute><Watchlist /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );
