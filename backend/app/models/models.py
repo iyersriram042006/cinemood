@@ -84,3 +84,13 @@ class Comment(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     user = relationship("User")
+
+class WatchlistItem(Base):
+    __tablename__ = "watchlist_items"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    movie_id = Column(UUID(as_uuid=True), ForeignKey("movies.id", ondelete="CASCADE"), nullable=False)
+    notes = Column(Text)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    movie = relationship("Movie")

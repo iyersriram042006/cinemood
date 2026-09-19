@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import Base, engine
-from app.api import auth, movies, journal, analytics, recommendations, friends, social, compare
+from app.api import auth, movies, journal, analytics, recommendations, friends, social, compare, watchlist
 
 Base.metadata.create_all(bind=engine)
 
@@ -23,6 +23,7 @@ app.include_router(recommendations.router)
 app.include_router(friends.router)
 app.include_router(social.router)
 app.include_router(compare.router)
+app.include_router(watchlist.router)
 
 @app.get("/")
 def root():

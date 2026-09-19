@@ -12,7 +12,7 @@ HEADERS = {
 def search_movies(query: str):
     url = f"{TMDB_BASE_URL}/search/movie"
     params = {"query": query, "include_adult": "false", "language": "en-US", "page": 1}
-    response = httpx.get(url, headers=HEADERS, params=params)
+    response = httpx.get(url, headers=HEADERS, params=params, timeout=15.0)
     response.raise_for_status()
     data = response.json()
 
@@ -31,7 +31,7 @@ def search_movies(query: str):
 def get_movie_details(tmdb_id: int):
     url = f"{TMDB_BASE_URL}/movie/{tmdb_id}"
     params = {"append_to_response": "credits", "language": "en-US"}
-    response = httpx.get(url, headers=HEADERS, params=params)
+    response = httpx.get(url, headers=HEADERS, params=params, timeout=15.0)
     response.raise_for_status()
     data = response.json()
 

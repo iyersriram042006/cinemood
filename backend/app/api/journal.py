@@ -60,8 +60,37 @@ def create_entry(data: JournalEntryCreate, db: Session = Depends(get_db), user: 
     return _serialize(entry)
 
 @router.get("", response_model=list[JournalEntryOut])
-def get_journal(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    entries = db.query(JournalEntry).filter(JournalEntry.user_id == user.id).order_by(JournalEntry.watched_at.desc()).all()
+def get_journal(
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+    search: str = None,
+    genre: str = None,
+    mood: str = None,
+    min_rating: float = None,
+    sort: str = "date_desc",
+):
+    query = db.query(JournalEntry).filter(JournalEntry.user_id == user.id)
+    entries = query.all()
+
+    if search:
+        s = search.lower()
+        entries = [e for e in entries if s in e.movie.title.lower()]
+    if genre:
+        entries = [e for e in entries if genre in (e.movie.genres or [])]
+    if mood:
+        entries = [e for e in entries if mood in [m.name for m in e.moods]]
+    if min_rating is not None:
+        entries = [e for e in entries if float(e.rating) >= min_rating]
+
+    if sort == "date_asc":
+        entries.sort(key=lambda e: e.watched_at)
+    elif sort == "rating_desc":
+        entries.sort(key=lambda e: float(e.rating), reverse=True)
+    elif sort == "rating_asc":
+        entries.sort(key=lambda e: float(e.rating))
+    else:
+        entries.sort(key=lambda e: e.watched_at, reverse=True)
+
     return [_serialize(e) for e in entries]
 
 @router.put("/{entry_id}", response_model=JournalEntryOut)
